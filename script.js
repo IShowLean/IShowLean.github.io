@@ -1,5 +1,8 @@
 import coefficientStudent from "./constants.js";
 
+let desmosExists = false;
+let calculator;
+
 function handleFile(file) {
   const reader = new FileReader();
 
@@ -24,26 +27,45 @@ function handleFile(file) {
 
     const step = calculateIntervals(allValues);
 
-    var elt = document.getElementById('calculator');
-    var calculator = Desmos.GraphingCalculator(elt);
-    calculator.setExpressions([
-      { id: 'graph1', latex: `a = [${allValues}]` },
-      { id: 'graph2', latex: `\\histogram(a, ${step})`, color: Desmos.Colors.BLUE,  },
-      { id: 'graph3', latex: '\\normaldist(\\mean(a),\\stdev(a))' },
-    ]);
+    clearParagraphs();
 
-    clearParagraphs()
+    if (desmosExists) {
+      calculator.destroy()
+    }
+
     if (isNaN(validateFile(allValues))) {
-      document.getElementById("warning").innerText = "The file contains an inappropriate number of elements or empty";
+      document.getElementById("warning").innerText = "The file contains an inappropriate number of elements or is empty";
+      desmosExists = false;
     } else {
       document.getElementById("resultAverage").innerText = `Average value: ${average}`;
-
       document.getElementById("resultStandardDeviation").innerText = `Standart Deviation: ${standardDeviation}`;
-
       document.getElementById("resultConfidenceInterval").innerText = `Confidence Interval: ${confidenceInterval}`;
+      document.getElementById("notification").innerText = "Turn on the Density mode in histogram panel";
+
+      var elt = document.getElementById('calculator');
+      calculator = Desmos.GraphingCalculator(elt);
+      buildDesmos(calculator, allValues, step);
+      desmosExists = true;
     }
   };
   reader.readAsArrayBuffer(file);
+}
+
+
+function buildDesmos(calculator, allValues, step) {
+  calculator.setExpressions([
+    { id: 'graph1', latex: `a = [${allValues}]` },
+    { id: 'graph2', latex: `\\histogram(a, ${step})`, color: Desmos.Colors.BLUE, xAxisStep: 1 },
+    { id: 'graph3', latex: '\\normaldist(\\mean(a),\\stdev(a))' },
+  ])
+  calculator.setMathBounds({
+    left: 4,
+    right: 5.5,
+    bottom: -1,
+    top: 5,
+  });
+
+  calculator.focusFirstExpression()
 }
 
 function calculateIntervals(data) {
@@ -66,6 +88,7 @@ function clearParagraphs() {
   document.getElementById("resultAverage").innerText = "";
   document.getElementById("resultStandardDeviation").innerText = "";
   document.getElementById("resultConfidenceInterval").innerText = "";
+  document.getElementById("notification").innerText = "";
 }
 
 function calculateAverage(values) {
@@ -108,8 +131,4 @@ function readFile() {
   }
 }
 
-window.handleFile = handleFile;
-window.calculateAverage = calculateAverage;
-window.calculateDeviation = calculateDeviation;
-window.calculateConfidenceInterval = calculateConfidenceInterval;
 window.readFile = readFile;
