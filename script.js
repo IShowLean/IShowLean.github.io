@@ -34,13 +34,13 @@ function handleFile(file) {
     }
 
     if (isNaN(validateFile(allValues))) {
-      document.getElementById("warning").innerText = "The file contains an inappropriate number of elements or is empty";
+      document.getElementById("warning").innerText = "Файл содержит неправильное количество элементов или пустой";
       desmosExists = false;
     } else {
-      document.getElementById("resultAverage").innerText = `Average value: ${average}`;
-      document.getElementById("resultStandardDeviation").innerText = `Standart Deviation: ${standardDeviation}`;
-      document.getElementById("resultConfidenceInterval").innerText = `Confidence Interval: ${confidenceInterval}`;
-      document.getElementById("notification").innerText = "Turn on the Density mode in histogram panel";
+      document.getElementById("resultAverage").innerText = `Среднее значение: ${average}`;
+      document.getElementById("resultStandardDeviation").innerText = `СКО среднего значения: ${standardDeviation}`;
+      document.getElementById("resultConfidenceInterval").innerText = `Доверительный интервал: ${confidenceInterval}`;
+      document.getElementById("notification").innerText = "Включите режим \"Density\" на панели гистограммы";
 
       var elt = document.getElementById('calculator');
       calculator = Desmos.GraphingCalculator(elt);
@@ -124,10 +124,10 @@ function readFile() {
     if (fileName.endsWith(".xlsx")) {
       handleFile(file);
     } else {
-      alert("Please select a file with the .xlsx extension");
+      alert("Пожалуйста выберите файл с .xlsx расширением");
     }
   } else {
-    alert("Please select a file");
+    alert("Пожалуйста выберите файл");
   }
 }
 

@@ -11,7 +11,7 @@
     />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.3/xlsx.full.min.js"></script>
     <script src="https://www.desmos.com/api/v1.8/calculator.js?apiKey=dcb31709b452b1cf9dc26972add0fda6"></script>
-    <title>Experiment Solver</title>
+    <title>Решатель Лабы</title>
   </head>
   <body>
     <div
@@ -52,9 +52,9 @@
       <div class="row">
         <div class="col-lg-8 offset-lg-2">
           <p class="text-bg-warning fw-semibold">
-            This program requires only .xlsx files with only one column filled
-            with numbers. File must be with the amount of measurements between
-            50 and 100.
+            Программа принимает только файлы расширения .xlsx с колонкой,
+            заполненной числами. Файл должен содержать количество измерений от
+            50 до 100.
           </p>
           <input
             class="form-control"
@@ -63,7 +63,7 @@
             accept=".xlsx"
           />
           <button class="btn btn-success mt-2" onclick="readFile()">
-            Analyze Data
+            Анализировать
           </button>
           <p id="warning" class="fw-semibold fs-5 my-2"></p>
         </div>
