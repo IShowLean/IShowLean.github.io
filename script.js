@@ -21,7 +21,16 @@ function handleFile(file) {
     const average = calculateAverage(allValues);
     const standardDeviation = calculateDeviation(allValues, average);
     const confidenceInterval = calculateConfidenceInterval(allValues.length, standardDeviation);
-    calculateColumns(allValues)
+
+    const step = calculateIntervals(allValues);
+
+    var elt = document.getElementById('calculator');
+    var calculator = Desmos.GraphingCalculator(elt);
+    calculator.setExpressions([
+      { id: 'graph1', latex: `a = [${allValues}]` },
+      { id: 'graph2', latex: `\\histogram(a, ${step})`, color: Desmos.Colors.BLUE,  },
+      { id: 'graph3', latex: '\\normaldist(\\mean(a),\\stdev(a))' },
+    ]);
 
     clearParagraphs()
     if (isNaN(validateFile(allValues))) {
@@ -37,52 +46,12 @@ function handleFile(file) {
   reader.readAsArrayBuffer(file);
 }
 
-function calculateColumns(data) {
+function calculateIntervals(data) {
   const maxValue = Math.max.apply(null, data);
   const minValue = Math.min.apply(null, data);
   const step = (maxValue - minValue) / 10;
-  const intervals = [minValue];
 
-  let i = 0;
-  while (intervals[i] < maxValue) {
-    let newValue = intervals[i] + step;
-    intervals.push(parseFloat(newValue.toFixed(2)));
-    i++;
-  }
-
-  console.log(intervals);
-
-  const valuesInIntervals = {};
-  for (let j = 1; j < intervals.length; j++) {
-    const intervalKey = `${intervals[j - 1]} - ${intervals[j]}`;
-    valuesInIntervals[intervalKey] = 0;
-  }
-
-  for (let i = 0; i < data.length; i++) {
-    for (let j = 1; j < intervals.length; j++) {
-      if (data[i] <= intervals[j] && data[i] >= intervals[j - 1]) {
-        const intervalKey = `${intervals[j - 1]} - ${intervals[j]}`;
-        if (!valuesInIntervals[intervalKey]) {
-          valuesInIntervals[intervalKey] = 1;
-        }
-        else {
-          valuesInIntervals[intervalKey] += 1;
-        }
-        break;
-      }
-    }
-  }
-
-  console.log(valuesInIntervals);
-
-  const devision = {}
-  for (let j = 1; j < intervals.length; j++) {
-    const intervalKey = `${intervals[j - 1]} - ${intervals[j]}`;
-    devision[intervalKey] = valuesInIntervals[intervalKey] / (100 * step);
-  }
-
-  console.log(devision);
-
+  return step
 }
 
 function validateFile(data) {
