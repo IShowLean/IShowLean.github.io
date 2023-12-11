@@ -1,5 +1,12 @@
 import coefficientStudent from "./constants.js";
 
+document.getElementById("warning").style.display = "none";
+document.getElementById("resultAverage").style.display = "none";
+document.getElementById("resultStandardDeviation").style.display = "none";
+document.getElementById("resultConfidenceInterval").style.display = "none";
+document.getElementById('notification').style.display = 'none';
+
+
 let desmosExists = false;
 let calculator;
 
@@ -34,9 +41,14 @@ function handleFile(file) {
     }
 
     if (isNaN(validateFile(allValues))) {
+      document.getElementById("warning").style.display = "block";
       document.getElementById("warning").innerText = "Файл содержит неправильное количество элементов или пустой";
       desmosExists = false;
     } else {
+      document.getElementById("resultAverage").style.display = "block";
+      document.getElementById("resultStandardDeviation").style.display = "block";
+      document.getElementById("resultConfidenceInterval").style.display = "block";
+      document.getElementById("notification").style.display = "block";
       document.getElementById("resultAverage").innerText = `Среднее значение: ${average}`;
       document.getElementById("resultStandardDeviation").innerText = `СКО среднего значения: ${standardDeviation}`;
       document.getElementById("resultConfidenceInterval").innerText = `Доверительный интервал: ${confidenceInterval}`;
@@ -82,6 +94,11 @@ function validateFile(data) {
 }
 
 function clearParagraphs() {
+  document.getElementById("warning").style.display = "none";
+  document.getElementById("resultAverage").style.display = "none";
+  document.getElementById("resultStandardDeviation").style.display = "none";
+  document.getElementById("resultConfidenceInterval").style.display = "none";
+  document.getElementById('notification').style.display = 'none';
   document.getElementById("warning").innerText = "";
   document.getElementById("resultAverage").innerText = "";
   document.getElementById("resultStandardDeviation").innerText = "";

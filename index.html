@@ -26,18 +26,18 @@
   <div class="alert alert-info" role="alert">
     Программа принимает только файлы .xlsx с колонкой, заполненной числами. Файл должен содержать от 50 до 100 измерений.
   </div>
-  <div class="mb-3">
-    <input class="form-control" type="file" id="fileInput" accept=".xlsx"/>
+  <div class="d-flex align-items-center">
+    <input class="form-control me-2" type="file" id="fileInput" accept=".xlsx"/>
+    <button class="btn btn-primary ml-4" onclick="readFile()">Анализировать</button>
   </div>
-  <button class="btn btn-primary mb-3" onclick="readFile()">Анализировать</button>
-  <div id="warning" class="alert alert-warning" role="alert"></div>
+  <div id="warning" class="alert alert-warning mt-3" role="alert"></div>
   <div class="row">
-    <div class="col-lg-6">
+    <div class="col-lg-6 mt-3">
       <div id="resultAverage" class="alert alert-success" role="alert"></div>
       <div id="resultStandardDeviation" class="alert alert-success" role="alert"></div>
       <div id="resultConfidenceInterval" class="alert alert-success" role="alert"></div>
     </div>
-    <div class="col-lg-6">
+    <div class="col-lg-6 mt-3">
       <div id="calculator" style="width: 100%; height: 400px;"></div>
       <div id="notification" class="alert alert-secondary" role="alert"></div>
     </div>
