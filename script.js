@@ -146,4 +146,11 @@ function readFile() {
   }
 }
 
+document.addEventListener("keydown", function (event) {
+  if (event.key === "Enter") {
+    event.preventDefault();
+    readFile();
+  }
+});
+
 window.readFile = readFile;
