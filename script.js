@@ -56,7 +56,7 @@ function buildDesmos(calculator, allValues, step) {
   calculator.setExpressions([
     { id: 'graph1', latex: `a = [${allValues}]` },
     { id: 'graph2', latex: `\\histogram(a, ${step})`, color: Desmos.Colors.BLUE, xAxisStep: 1 },
-    { id: 'graph3', latex: '\\normaldist(\\mean(a),\\stdev(a))' },
+    { id: 'graph3', latex: '\\normaldist(\\mean(a),\\stdev(a))', color: Desmos.Colors.GREEN },
   ])
   calculator.setMathBounds({
     left: 4,
@@ -64,8 +64,6 @@ function buildDesmos(calculator, allValues, step) {
     bottom: -1,
     top: 5,
   });
-
-  calculator.focusFirstExpression()
 }
 
 function calculateIntervals(data) {
