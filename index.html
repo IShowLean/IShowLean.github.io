@@ -1,86 +1,48 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link
-      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
-      rel="stylesheet"
-      integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN"
-      crossorigin="anonymous"
-    />
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.3/xlsx.full.min.js"></script>
-    <script src="https://www.desmos.com/api/v1.8/calculator.js?apiKey=dcb31709b452b1cf9dc26972add0fda6"></script>
-    <title>Решатель Лабы</title>
-  </head>
-  <body>
-    <div
-      class="modal fade"
-      id="alertModal"
-      tabindex="-1"
-      aria-labelledby="alertModalLabel"
-      aria-hidden="true"
-    >
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="alertModalLabel">Alert</h5>
-            <button
-              type="button"
-              class="btn-close"
-              data-bs-dismiss="modal"
-              aria-label="Close"
-            ></button>
-          </div>
-          <div class="modal-body">
-            <p id="alertMessage"></p>
-          </div>
-          <div class="modal-footer">
-            <button
-              type="button"
-              class="btn btn-secondary"
-              data-bs-dismiss="modal"
-            >
-              Close
-            </button>
-          </div>
-        </div>
-      </div>
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous"/>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.3/xlsx.full.min.js"></script>
+  <script src="https://www.desmos.com/api/v1.8/calculator.js?apiKey=dcb31709b452b1cf9dc26972add0fda6"></script>
+  <title>Решатель Лабы</title>
+  <style>
+    .header {
+      padding: 20px;
+      text-align: center;
+      background: #1abc9c;
+      color: white;
+      font-size: 30px;
+    }
+  </style>
+</head>
+<body>
+<div class="header">
+  <h2>Лабораторный Анализатор</h2>
+</div>
+<div class="container mt-5">
+  <div class="alert alert-info" role="alert">
+    Программа принимает только файлы .xlsx с колонкой, заполненной числами. Файл должен содержать от 50 до 100 измерений.
+  </div>
+  <div class="mb-3">
+    <input class="form-control" type="file" id="fileInput" accept=".xlsx"/>
+  </div>
+  <button class="btn btn-primary mb-3" onclick="readFile()">Анализировать</button>
+  <div id="warning" class="alert alert-warning" role="alert"></div>
+  <div class="row">
+    <div class="col-lg-6">
+      <div id="resultAverage" class="alert alert-success" role="alert"></div>
+      <div id="resultStandardDeviation" class="alert alert-success" role="alert"></div>
+      <div id="resultConfidenceInterval" class="alert alert-success" role="alert"></div>
     </div>
-    <div class="container text-center my-5">
-      <div class="row">
-        <div class="col-lg-8 offset-lg-2">
-          <p class="text-bg-warning fw-semibold">
-            Программа принимает только файлы расширения .xlsx с колонкой,
-            заполненной числами. Файл должен содержать количество измерений от
-            50 до 100.
-          </p>
-          <input
-            class="form-control"
-            type="file"
-            id="fileInput"
-            accept=".xlsx"
-          />
-          <button class="btn btn-success mt-2" onclick="readFile()">
-            Анализировать
-          </button>
-          <p id="warning" class="fw-semibold fs-5 my-2"></p>
-        </div>
-      </div>
-      <div class="row mt-5 d-flex align-items-center justify-content-center">
-        <div class="col-lg-6 col-md-8 text-center">
-          <p id="resultAverage" class="fw-semibold fs-3"></p>
-          <p id="resultStandardDeviation" class="fw-semibold fs-3"></p>
-          <p id="resultConfidenceInterval" class="fw-semibold fs-3"></p>
-        </div>
-        <div class="col-lg-6 col-md-8 text-center">
-          <div id="calculator" style="width: 637px; height: 500px"></div>
-          <div style="width: 637px">
-            <p id="notification" class="text-bg-secondary my-1"></p>
-          </div>
-        </div>
-      </div>
+    <div class="col-lg-6">
+      <div id="calculator" style="width: 100%; height: 400px;"></div>
+      <div id="notification" class="alert alert-secondary" role="alert"></div>
     </div>
-    <script type="module" src="script.js" defer></script>
-  </body>
+  </div>
+</div>
+<script type="module" src="script.js" defer></script>
+</body>
 </html>
