@@ -54,7 +54,7 @@ function handleFile(file) {
       document.getElementById("resultConfidenceInterval").innerText = `Доверительный интервал: ${confidenceInterval}`;
       document.getElementById("notification").innerText = "Включите режим \"Density\" на панели гистограммы";
 
-      var elt = document.getElementById('calculator');
+      let elt = document.getElementById('calculator');
       calculator = Desmos.GraphingCalculator(elt);
       buildDesmos(calculator, allValues, step);
       desmosExists = true;
@@ -63,8 +63,8 @@ function handleFile(file) {
   reader.readAsArrayBuffer(file);
 }
 
-
 function buildDesmos(calculator, allValues, step) {
+
   calculator.setExpressions([
     { id: 'graph1', latex: `a = [${allValues}]` },
     { id: 'graph2', latex: `\\histogram(a, ${step})`, color: Desmos.Colors.BLUE, xAxisStep: 1 },
