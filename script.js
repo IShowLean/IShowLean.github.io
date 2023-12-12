@@ -1,14 +1,9 @@
 import coefficientStudent from "./constants.js";
 
-document.getElementById("warning").style.display = "none";
-document.getElementById("resultAverage").style.display = "none";
-document.getElementById("resultStandardDeviation").style.display = "none";
-document.getElementById("resultConfidenceInterval").style.display = "none";
-document.getElementById('notification').style.display = 'none';
+clearParagraphs()
 
-
-let desmosExists = false;
-let calculator;
+let chart = null;
+let chartExists = false;
 
 function handleFile(file) {
   const reader = new FileReader();
@@ -32,50 +27,100 @@ function handleFile(file) {
     const standardDeviation = calculateDeviation(allValues, average);
     const confidenceInterval = calculateConfidenceInterval(allValues.length, standardDeviation);
 
-    const step = calculateIntervals(allValues);
-
     clearParagraphs();
 
-    if (desmosExists) {
-      calculator.destroy()
+    if (chartExists) {
+      chart.destroy()
     }
 
     if (isNaN(validateFile(allValues))) {
       document.getElementById("warning").style.display = "block";
       document.getElementById("warning").innerText = "Файл содержит неправильное количество элементов или пустой";
-      desmosExists = false;
     } else {
       document.getElementById("resultAverage").style.display = "block";
       document.getElementById("resultStandardDeviation").style.display = "block";
       document.getElementById("resultConfidenceInterval").style.display = "block";
-      document.getElementById("notification").style.display = "block";
       document.getElementById("resultAverage").innerText = `Среднее значение: ${average}`;
       document.getElementById("resultStandardDeviation").innerText = `СКО среднего значения: ${standardDeviation}`;
       document.getElementById("resultConfidenceInterval").innerText = `Доверительный интервал: ${confidenceInterval}`;
-      document.getElementById("notification").innerText = "Включите режим \"Density\" на панели гистограммы";
 
-      let elt = document.getElementById('calculator');
-      calculator = Desmos.GraphingCalculator(elt);
-      buildDesmos(calculator, allValues, step);
-      desmosExists = true;
+      chart = buildChart(calculateDevision(allValues));
+      chartExists = true;
     }
   };
   reader.readAsArrayBuffer(file);
 }
 
-function buildDesmos(calculator, allValues, step) {
+function buildChart(devision) {
+  var ctx = document.getElementById('myChart').getContext('2d');
+  var histogramData = {
+    datasets: [{
+      label: 'Гистограмма',
+      backgroundColor: 'rgba(75, 192, 192, 0.2)',
+      borderColor: 'rgba(75, 192, 192, 1)',
+      borderWidth: 1,
+      barPercentage: 1.27,
+      data: devision,
+      type: 'bar',
+    }]
+  };
 
-  calculator.setExpressions([
-    { id: 'graph1', latex: `a = [${allValues}]` },
-    { id: 'graph2', latex: `\\histogram(a, ${step})`, color: Desmos.Colors.BLUE, xAxisStep: 1 },
-    { id: 'graph3', latex: '\\normaldist(\\mean(a),\\stdev(a))', color: Desmos.Colors.GREEN },
-  ])
-  calculator.setMathBounds({
-    left: 4,
-    right: 5.5,
-    bottom: -1,
-    top: 5,
+  var myChart = new Chart(ctx, {
+    type: 'bar',
+    data: histogramData,
+    options: {
+      scales: {
+        y: {
+          beginAtZero: true
+        },
+      }
+    }
   });
+
+  return myChart
+}
+
+function calculateDevision(data) {
+  const maxValue = Math.max.apply(null, data);
+  const minValue = Math.min.apply(null, data);
+  const step = (maxValue - minValue) / 10;
+  const intervals = [minValue];
+
+  let i = 0;
+  while (intervals[i] < maxValue) {
+    let newValue = intervals[i] + step;
+    intervals.push(parseFloat(newValue.toFixed(2)));
+    i++;
+  }
+
+  const valuesInIntervals = {};
+  for (let j = 1; j < intervals.length; j++) {
+    const intervalKey = `${intervals[j - 1]} - ${intervals[j]}`;
+    valuesInIntervals[intervalKey] = 0;
+  }
+
+  for (let i = 0; i < data.length; i++) {
+    for (let j = 1; j < intervals.length; j++) {
+      if (data[i] <= intervals[j] && data[i] >= intervals[j - 1]) {
+        const intervalKey = `${intervals[j - 1]} - ${intervals[j]}`;
+        if (!valuesInIntervals[intervalKey]) {
+          valuesInIntervals[intervalKey] = 1;
+        }
+        else {
+          valuesInIntervals[intervalKey] += 1;
+        }
+        break;
+      }
+    }
+  }
+
+  const devision = {}
+  for (let j = 1; j < intervals.length; j++) {
+    const intervalKey = `${intervals[j - 1]} - ${intervals[j]}`;
+    devision[intervalKey] = valuesInIntervals[intervalKey] / (100 * step);
+  }
+
+  return devision
 }
 
 function calculateIntervals(data) {
@@ -98,12 +143,6 @@ function clearParagraphs() {
   document.getElementById("resultAverage").style.display = "none";
   document.getElementById("resultStandardDeviation").style.display = "none";
   document.getElementById("resultConfidenceInterval").style.display = "none";
-  document.getElementById('notification').style.display = 'none';
-  document.getElementById("warning").innerText = "";
-  document.getElementById("resultAverage").innerText = "";
-  document.getElementById("resultStandardDeviation").innerText = "";
-  document.getElementById("resultConfidenceInterval").innerText = "";
-  document.getElementById("notification").innerText = "";
 }
 
 function calculateAverage(values) {
