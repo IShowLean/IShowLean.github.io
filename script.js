@@ -83,7 +83,7 @@ function calculateIntervals(data) {
   const minValue = Math.min.apply(null, data);
   const step = (maxValue - minValue) / 10;
 
-  return step
+  return step;
 }
 
 function validateFile(data) {
