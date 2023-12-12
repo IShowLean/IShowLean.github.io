@@ -26,6 +26,8 @@ function handleFile(file) {
     const average = calculateAverage(allValues);
     const standardDeviation = calculateDeviation(allValues, average);
     const confidenceInterval = calculateConfidenceInterval(allValues.length, standardDeviation);
+    const sigma = calculateSigma(allValues, average);
+    const timesForGauss = calculateAverageInIntervals(allValues);
 
     clearParagraphs();
 
@@ -78,6 +80,36 @@ function buildChart(devision) {
   });
 
   return myChart
+}
+
+function calculateSigma(data, average) {
+  let squareSums = 0
+  for (let i = 0; i < data.length; i++) {
+    squareSums += Math.pow((data[i] - average), 2)
+  }
+  const sigma = 1 / (data.length - 1) * squareSums;
+  return parseFloat(sigma.toFixed(3))
+}
+
+function calculateAverageInIntervals(data) {
+  const maxValue = Math.max.apply(null, data);
+  const minValue = Math.min.apply(null, data);
+  const step = (maxValue - minValue) / 10;
+  const intervals = [minValue];
+
+  let i = 0;
+  while (intervals[i] < maxValue) {
+    let newValue = intervals[i] + step;
+    intervals.push(parseFloat(newValue.toFixed(2)));
+    i++;
+  }
+  let stepInIntervals = step / 2
+  let timesForGauss = []
+  for (let i = 0; i < intervals.length - 1; i++) {
+    timesForGauss.push(intervals[i] + stepInIntervals)
+  }
+
+  return timesForGauss;
 }
 
 function calculateDevision(data) {
