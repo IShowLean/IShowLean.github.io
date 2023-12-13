@@ -97,6 +97,14 @@ function buildChart(devision, sigma, timesForGauss, average) {
         y: {
           beginAtZero: true
         }, 
+        x: {
+          ticks: {
+            font: {
+              size: 9
+            }
+          }
+        },
+  
       },
     }, 
   })
