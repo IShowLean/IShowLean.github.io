@@ -67,27 +67,27 @@ function buildChart(devision, sigma, timesForGauss, average) {
     }]
   };
 
-  var mydata1 = { 
-    datasets : [
+  var gaussData = {
+    datasets: [
       {
-        borderJoinStyle : 'round',
-        label : 'Функция Гаусса',
-        strokeColor : "rgba(220,220,220,1)",
-        data : [],
-        xPos : timesForGauss,
-        title : "Sinus",
+        label: 'Функция Гаусса',
+        data: [],
+        backgroundColor: 'rgba(148, 0, 211, 0.4)',
+        borderColor: 'rgba(148, 0, 211, 1)',
+        borderWidth: 1,
+        pointRadius: 4,
         type: 'line',
         tension: 0.4,
       }
     ]
-  }   
+  };
+
   var gauss_var = sigma;
   var gauss_mean = average;
 
-  for(var i=0;i<timesForGauss.length;i++)
-  {
-    mydata1.datasets[0].data[i]=(1/(gauss_var*Math.sqrt(2*Math.PI))) * Math.exp(-1*((mydata1.datasets[0].xPos[i]-gauss_mean)*(mydata1.datasets[0].xPos[i]-gauss_mean))/(2*gauss_var*gauss_var));
-  }  
+  for (var i = 0; i < timesForGauss.length; i++) {
+    gaussData.datasets[0].data[i] = (1 / (gauss_var * Math.sqrt(2 * Math.PI))) * Math.exp(-1 * ((timesForGauss[i] - gauss_mean) * (timesForGauss[i] - gauss_mean)) / (2 * gauss_var * gauss_var));
+  }
 
   var myChart = new Chart(ctx, {
     type: 'bar',
@@ -96,7 +96,7 @@ function buildChart(devision, sigma, timesForGauss, average) {
       scales: {
         y: {
           beginAtZero: true
-        }, 
+        },
         x: {
           ticks: {
             font: {
@@ -104,15 +104,14 @@ function buildChart(devision, sigma, timesForGauss, average) {
             }
           }
         },
-  
       },
-    }, 
-  })
+    },
+  });
 
-  myChart.data.datasets.push(mydata1.datasets[0]);
+  myChart.data.datasets.push(gaussData.datasets[0]);
   myChart.update();
 
-  return myChart
+  return myChart;
 }
 
 function calculateSigma(data, average) {
@@ -120,7 +119,7 @@ function calculateSigma(data, average) {
   for (let i = 0; i < data.length; i++) {
     squareSums += Math.pow((data[i] - average), 2)
   }
-  const sigma = Math.sqrt( 1 / (data.length - 1) * squareSums,2);
+  const sigma = Math.sqrt(1 / (data.length - 1) * squareSums, 2);
   return parseFloat(sigma.toFixed(3))
 }
 
@@ -136,8 +135,9 @@ function calculateAverageInIntervals(data) {
     intervals.push(parseFloat(newValue.toFixed(2)));
     i++;
   }
-  let stepInIntervals = step / 2
+
   let timesForGauss = []
+  let stepInIntervals = step / 2
   for (let i = 0; i < intervals.length - 1; i++) {
     timesForGauss.push(intervals[i] + stepInIntervals)
   }
@@ -186,14 +186,6 @@ function calculateDevision(data) {
   }
 
   return devision
-}
-
-function calculateIntervals(data) {
-  const maxValue = Math.max.apply(null, data);
-  const minValue = Math.min.apply(null, data);
-  const step = (maxValue - minValue) / 10;
-
-  return step;
 }
 
 function validateFile(data) {
