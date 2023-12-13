@@ -46,14 +46,14 @@ function handleFile(file) {
       document.getElementById("resultStandardDeviation").innerText = `СКО среднего значения: ${standardDeviation}`;
       document.getElementById("resultConfidenceInterval").innerText = `Доверительный интервал: ${confidenceInterval}`;
 
-      chart = buildChart(calculateDevision(allValues));
+      chart = buildChart(calculateDevision(allValues), sigma, timesForGauss, average);
       chartExists = true;
     }
   };
   reader.readAsArrayBuffer(file);
 }
 
-function buildChart(devision) {
+function buildChart(devision, sigma, timesForGauss, average) {
   var ctx = document.getElementById('myChart').getContext('2d');
   var histogramData = {
     datasets: [{
@@ -67,6 +67,28 @@ function buildChart(devision) {
     }]
   };
 
+  var mydata1 = { 
+    datasets : [
+      {
+        borderJoinStyle : 'round',
+        label : 'Функция Гаусса',
+        strokeColor : "rgba(220,220,220,1)",
+        data : [],
+        xPos : timesForGauss,
+        title : "Sinus",
+        type: 'line',
+        tension: 0.4,
+      }
+    ]
+  }   
+  var gauss_var = sigma;
+  var gauss_mean = average;
+
+  for(var i=0;i<timesForGauss.length;i++)
+  {
+    mydata1.datasets[0].data[i]=(1/(gauss_var*Math.sqrt(2*Math.PI))) * Math.exp(-1*((mydata1.datasets[0].xPos[i]-gauss_mean)*(mydata1.datasets[0].xPos[i]-gauss_mean))/(2*gauss_var*gauss_var));
+  }  
+
   var myChart = new Chart(ctx, {
     type: 'bar',
     data: histogramData,
@@ -74,10 +96,13 @@ function buildChart(devision) {
       scales: {
         y: {
           beginAtZero: true
-        },
-      }
-    }
-  });
+        }, 
+      },
+    }, 
+  })
+
+  myChart.data.datasets.push(mydata1.datasets[0]);
+  myChart.update();
 
   return myChart
 }
@@ -87,7 +112,7 @@ function calculateSigma(data, average) {
   for (let i = 0; i < data.length; i++) {
     squareSums += Math.pow((data[i] - average), 2)
   }
-  const sigma = 1 / (data.length - 1) * squareSums;
+  const sigma = Math.sqrt( 1 / (data.length - 1) * squareSums,2);
   return parseFloat(sigma.toFixed(3))
 }
 
