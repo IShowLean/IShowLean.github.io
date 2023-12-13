@@ -192,6 +192,7 @@ function validateFile(data) {
   if (data.length < 50 || data.length > 100) {
     return NaN;
   }
+
   return true;
 }
 
